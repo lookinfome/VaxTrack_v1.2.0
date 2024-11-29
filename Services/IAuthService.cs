@@ -6,10 +6,21 @@ namespace v1Remastered.Services
     // interface: to expose the services
     public interface IAuthService
     {
-        public Task<string> RegisterUserAsync(string userid, string password, string role);
+        // exposed to: account service
         public Task<string> LoginUserAsync(string userid, string password);
-        public Task<bool> LogoutUserAsync();
+
+        // exposed to: user profile controller
         public Task<bool> CheckUserAuthenticity(string userid, string password);
+        
+        // exposed to: account service
+        public Task<string> RegisterUserAsync(string userid, string password, string role);
+
+        /* exposed to: 
+            account controller, 
+            admin controller, 
+            user profile controller 
+        */
+        public Task<bool> LogoutUserAsync();
     }
 
     // class: to define the implementation of services
@@ -99,7 +110,6 @@ namespace v1Remastered.Services
             var user = await _userManager.FindByNameAsync(userid);
             if(user == null)
             {
-                Console.WriteLine("user found null");
                 return false;
             }
 

@@ -10,7 +10,13 @@ namespace v1Remastered.Services
 {
     public interface IBookingService
     {
+        // exposed to: booking controller
         public int BookSlot(BookingDetailsDto_SlotBook submittedDetails, string userid);
+        
+        /* exposed to: 
+            booking controller,
+            user profile service
+        */
         public BookingDetailsDto_UserBookingDetails FetchBookingDetails(string userid);
     }
 
@@ -26,7 +32,7 @@ namespace v1Remastered.Services
             _hospitalService = hospitalService;
         }
 
-        
+        // service method: to book slot
         public int BookSlot(BookingDetailsDto_SlotBook submittedDetails, string userid)
         {
             int result = 0;
@@ -128,6 +134,7 @@ namespace v1Remastered.Services
 
         }
 
+        // service method: to fetch user booking details 
         public BookingDetailsDto_UserBookingDetails FetchBookingDetails(string userid)
         {
             var bookingDetails = _v1RemDb.BookingDetails.FirstOrDefault(record => record.UserId == userid);
@@ -153,6 +160,7 @@ namespace v1Remastered.Services
             return new BookingDetailsDto_UserBookingDetails();
         }
 
+        // utility method: generate new booking id
         private string GenerateBookingId(string userid)
         {
             Random rnd = new Random();

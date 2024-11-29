@@ -10,7 +10,11 @@ namespace v1Remastered.Services
 {
     public interface IAccountService
     {
+
+        // exposed to: account controller
         public string LoginUser(UserDetailsDto_Login submittedDetails);
+
+        // exposed to: account controller
         public string RegisterUser(UserDetailsDto_Register submittedDetails);
     }
 
@@ -27,7 +31,7 @@ namespace v1Remastered.Services
             _userVaccineDetailsService = userVaccineDetailsService;
         }
 
-        // login new user
+        // service method: login new user
         public string LoginUser(UserDetailsDto_Login submittedDetails)
         {
             Task<string> result = _authService.LoginUserAsync(submittedDetails.UserId, submittedDetails.UserPassword);
@@ -35,13 +39,11 @@ namespace v1Remastered.Services
             return !string.IsNullOrEmpty(result.Result.ToString()) && result.Result.ToString() == submittedDetails.UserId ? submittedDetails.UserId : "";
         }
 
-        // register new user
+        // service method: register new user
         public string RegisterUser(UserDetailsDto_Register submittedDetails)
         {
             // user id
             submittedDetails.UserId = GenerateUserId(submittedDetails.UserName, submittedDetails.UserUid);
-            
-            Console.WriteLine($"----------registeration form::::::::{submittedDetails.UserRole}----------");
 
             // user role
             string userRole = submittedDetails.UserRole == false ? "user" : "admin";
@@ -52,47 +54,18 @@ namespace v1Remastered.Services
             // save user details in DB
             if(!string.IsNullOrEmpty(result.Result.ToString()) && result.Result.ToString() == submittedDetails.UserId)
             {
-                UserDetailsModel userDetails = new UserDetailsModel()
-                {
-                    UserId = submittedDetails.UserId,
-                    UserName = submittedDetails.UserName,
-                    UserUid = submittedDetails.UserUid,
-                    UserPhone = submittedDetails.UserPhone,
-                    UserGender = submittedDetails.UserGender,
-                    UserBirthdate = submittedDetails.UserBirthdate,
-                    UserRole = submittedDetails.UserRole
-                };
+                bool isUserDetailsSaved = SaveNewUserDetails(submittedDetails);
 
-                // update DB
-                _v1RemDb.UserDetails.Add(userDetails);
-                int userDetailsSavedStatus = _v1RemDb.SaveChanges();
+                bool isUserVaccineDetailsSaved = isUserDetailsSaved ? _userVaccineDetailsService.SaveNewUserVaccinationDetails(submittedDetails.UserId) : false;
 
-                if(userDetailsSavedStatus >= 0)
-                {
-                    string userVaccinationId = _userVaccineDetailsService.GenerateUserVaccineId(submittedDetails.UserId);
-
-                    // save user vaccination detail in DB
-                    UserVaccineDetailsModel userVaccineDetails = new UserVaccineDetailsModel()
-                    {
-                        UserId = submittedDetails.UserId,
-                        UserVaccinationId = userVaccinationId,
-                        UserVaccinationStatus = 0
-                    };
-
-                    // update DB
-                    _v1RemDb.UserVaccineDetails.Add(userVaccineDetails);
-                }
-
-                int userVaccineDetailsSavedStatus= _v1RemDb.SaveChanges();
-
-                return userVaccineDetailsSavedStatus <=0 ? "" : submittedDetails.UserId;
+                return isUserVaccineDetailsSaved ? submittedDetails.UserId : "";
             }
 
             return "";
         
         }
 
-
+        // utility method: generate new user id
         private string GenerateUserId(string username, string userUid)
         {
             Random rnd = new Random();
@@ -102,7 +75,30 @@ namespace v1Remastered.Services
             return userId.ToUpper();
         }
 
+        // utility method: save new user record
+        private bool SaveNewUserDetails(UserDetailsDto_Register submittedDetails)
+        {
 
+            // map details to user details model
+            UserDetailsModel userDetails = new UserDetailsModel()
+            {
+                UserId = submittedDetails.UserId,
+                UserName = submittedDetails.UserName,
+                UserUid = submittedDetails.UserUid,
+                UserPhone = submittedDetails.UserPhone,
+                UserGender = submittedDetails.UserGender,
+                UserBirthdate = submittedDetails.UserBirthdate,
+                UserRole = submittedDetails.UserRole
+            };
+
+            // save record to DB and update DB
+            _v1RemDb.UserDetails.Add(userDetails);
+            int userDetailsSavedStatus = _v1RemDb.SaveChanges();
+
+            Console.WriteLine($"---------user db saved status :: {userDetailsSavedStatus}----------");
+
+            return userDetailsSavedStatus > 0;
+        }
 
 
 

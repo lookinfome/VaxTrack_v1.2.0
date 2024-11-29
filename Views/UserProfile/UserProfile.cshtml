@@ -37,7 +37,19 @@
         </div>
     }
 
+    @if(!string.IsNullOrEmpty(ViewBag.BookingStatusMsg))
+    {
+        <div class="row">
+            <div id="bookingStatusMsg" class="alert alert-info text-center">
+                <b> @ViewBag.BookingStatusMsg </b>
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+        </div>
+    }
+    
+
     @* 0th row *@
+    
     <div class="row justify-content-center mt-5">
         <div class="col col-lg-6 col-md-12 col-sm-12 d-flex justify-content-between user-identity-details">
 
@@ -129,7 +141,7 @@
                         <span style="font-weight: 600;">
                             <i style="color: yellow; text-shadow: 0px 1px 10px yellow;" class="fas fa-bookmark"></i> Vaccination ID <br>
                         </span>
-                        @Model.UserVaccineDetails.UserId
+                        @Model.UserVaccineDetails.UserVaccinationId
                     </div>
 
                     @* user vaccination status *@
@@ -339,6 +351,17 @@
         window.onload = function() {
             setTimeout(function() {
                 var welcomeMessage = document.getElementById('updateStatusMsg');
+                if (welcomeMessage) {
+                    welcomeMessage.style.display = 'none';
+                }
+            }, 5000); // 5000 milliseconds = 5 seconds
+        };
+    </script>
+
+    <script>
+        window.onload = function() {
+            setTimeout(function() {
+                var welcomeMessage = document.getElementById('bookingStatusMsg');
                 if (welcomeMessage) {
                     welcomeMessage.style.display = 'none';
                 }

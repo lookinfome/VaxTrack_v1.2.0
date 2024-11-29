@@ -9,8 +9,8 @@ namespace v1Remastered.Controllers
     public class BookingController : Controller
     {
         private readonly IBookingService _bookingService;
-
         private readonly IHospitalService _hospitalService;
+        
         public BookingController(IBookingService bookingService, IHospitalService hospitalService)
         {
             _bookingService = bookingService;
@@ -57,19 +57,21 @@ namespace v1Remastered.Controllers
         [HttpPost("{userid}")]
         public IActionResult Booking(BookingDetailsDto_SlotBook submittedDetails, [FromRoute] string userid)
         {
-            ViewBag.userId = userid;
 
             int result = _bookingService.BookSlot(submittedDetails, userid);
 
             if(result > 0)
             {
-                return RedirectToAction("UserProfile", "UserProfile", new { userid = userid });
+                TempData["BookingStatusMsg"] = $"Booking successfull, see you soon at the vaccination center"; 
             }
             else
             {
-                ViewBag.BookingErrorMsg = "Unexpected error occurred";
-                return View("~/Views/Booking/BookingError.cshtml");
+                TempData["BookingStatusMsg"] = $"Booking unsuccessful, apologies and working on it or try again";
+                // ViewBag.BookingErrorMsg = "Unexpected error occurred";
+                // return View("~/Views/Booking/BookingError.cshtml");
             }
+
+            return RedirectToAction("UserProfile", "UserProfile", new { userid = userid });
         }
     }
 }

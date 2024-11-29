@@ -12,14 +12,12 @@ namespace v1Remastered.Controllers
     {
         private readonly IAuthService _authService;
         private readonly IUserProfileService _userProfileService;
-        private readonly IHospitalService _hospitalService;
         private readonly UserManager<AppUserIdentityModel> _userManager;
-        public UserProfileController(IAuthService authService, IUserProfileService userProfileService, IHospitalService hospitalService, UserManager<AppUserIdentityModel> userManager)
+        public UserProfileController(IAuthService authService, IUserProfileService userProfileService, UserManager<AppUserIdentityModel> userManager)
         {
             _authService = authService;
-            _userProfileService = userProfileService;
-            _hospitalService = hospitalService;
             _userManager = userManager;
+            _userProfileService = userProfileService;
         }
 
         [Authorize]
@@ -41,18 +39,31 @@ namespace v1Remastered.Controllers
 
                 // fetch hospital details
                 UserDetailsDto_UserProfile userProfileDetails = _userProfileService.FetchUserProfileDetails(userid);
-                ViewBag.D1HospitalName = _hospitalService.FetchHospitalNameById(userProfileDetails.UserBookingDetails.D1HospitalId);
-                ViewBag.D2HospitalName = _hospitalService.FetchHospitalNameById(userProfileDetails.UserBookingDetails.D2HospitalId);
+                ViewBag.D1HospitalName = _userProfileService.FetchAdditionalUserDetails(userProfileDetails)["D1HospitalName"];
+                ViewBag.D2HospitalName = _userProfileService.FetchAdditionalUserDetails(userProfileDetails)["D2HospitalName"];
 
-                // welcome message
+                // welcome message: login
                 if(!string.IsNullOrEmpty(TempData["userLoginMsgSuccess"]?.ToString()))
                 {
                     ViewBag.WelcomeMessage = TempData["userLoginMsgSuccess"];
                 }
 
+                // welcome message: register
+                if(!string.IsNullOrEmpty(TempData["SignUpSuccessMsg"]?.ToString()))
+                {
+                    ViewBag.WelcomeMessage = TempData["SignUpSuccessMsg"];
+                }
+
+                // update message: edit profile
                 if(!string.IsNullOrEmpty(TempData["userProfileUpdateMsg"]?.ToString()))
                 {
                     ViewBag.UserProfileUpdateMsg = TempData["userProfileUpdateMsg"];
+                }
+
+                // update message: slot booking
+                if(!string.IsNullOrEmpty(TempData["BookingStatusMsg"]?.ToString()))
+                {
+                    ViewBag.BookingStatusMsg = TempData["BookingStatusMsg"];
                 }
  
                 // final call to view
@@ -62,7 +73,7 @@ namespace v1Remastered.Controllers
                 }
             }
 
-            return View("~/Shared/_Error.cshtml");
+            return View("~/Views/UserProfile/UserProfileError.cshtml");
         }
 
         [HttpGet("{userid}/Edit")]
@@ -83,7 +94,7 @@ namespace v1Remastered.Controllers
 
                 return View();
             }
-            return View("~/Shared/_Error.cshtml");
+            return View("~/Views/UserProfile/UserProfileError.cshtml");
         }
 
         [HttpPost("{userid}/Edit")]

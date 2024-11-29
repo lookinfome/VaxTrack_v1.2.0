@@ -7,6 +7,16 @@
 }
 
 <div class="container">
+
+    @if(!string.IsNullOrEmpty(ViewBag.SignUpFailedMsg))
+    {
+        <div id="registrationFailMsg" class="alert alert-warning" role="alert">
+            <div class="alert"> @ViewBag.SignUpFailedMsg </div>
+        </div>
+    }
+
+    
+
     <div class="row justify-content-center mt-5">
 
         <div class="col col-lg-3 col-md-6 col-sm-12">
@@ -148,5 +158,21 @@
                 alert('Passwords do not match.');
             }
         });
+    </script>
+
+
+    <script>
+
+        <script>
+            window.onload = function() {
+                setTimeout(function() {
+                    var welcomeMessage = document.getElementById('registrationFailMsg');
+                    if (welcomeMessage) {
+                        welcomeMessage.style.display = 'none';
+                    }
+                }, 5000); // 5000 milliseconds = 5 seconds
+            };
+        </script>
+
     </script>
 }

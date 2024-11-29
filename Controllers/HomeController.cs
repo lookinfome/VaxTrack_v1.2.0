@@ -13,6 +13,7 @@ public class HomeController : Controller
         _logger = logger;
     }
 
+    // home page
     public IActionResult Index()
     {
         ViewBag.appName = "VaxTrack";

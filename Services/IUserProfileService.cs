@@ -10,10 +10,20 @@ namespace v1Remastered.Services
 {
     public interface IUserProfileService
     {
-        public UserDetailsDto_UserProfile FetchUserProfileDetails(string userid);
-        public string FetchUserRoleById(string userid);
-        public string FetchUserName(string userid);
+        // exposed to: user profile controller
         public bool UpdateUserProfile(string userId, string userPhone, DateTime userBirthDate);
+
+        // exposed to: user profile controller
+        public UserDetailsDto_UserProfile FetchUserProfileDetails(string userid);
+
+        // exposed to: user profile controller
+        public Dictionary<string, string> FetchAdditionalUserDetails(UserDetailsDto_UserProfile userProfileDetails);
+
+        // exposed to: 
+        public string FetchUserRoleById(string userid);
+
+        // exposed to: account controller
+        public string FetchUserName(string userid);
     }
 
     public class UserProfileService : IUserProfileService
@@ -38,7 +48,7 @@ namespace v1Remastered.Services
 
             if (userDetails != null && !string.IsNullOrEmpty(userDetails.UserId))
             {
-                var userVaccineDetails = _userVaccineDetailsService.FetchUserVaccineDetails(userid);
+                var userVaccineDetails = _userVaccineDetailsService.FetchUserVaccinationDetails(userid);
                 var userBookingDetails = _bookingService.FetchBookingDetails(userid);
 
                 var userProfileDetails = new UserDetailsDto_UserProfile()
@@ -59,32 +69,6 @@ namespace v1Remastered.Services
 
             return new UserDetailsDto_UserProfile();
         }
-
-        public string FetchUserRoleById(string userid)
-        {
-            var userRecord = _v1RemDb.UserDetails.FirstOrDefault(record => record.UserId == userid);
-
-            if (userRecord != null)
-            {
-                return userRecord.UserRole ? "admin" : "user";
-            }
-
-            return "user"; // Default role if userRecord is null
-        }
-
-
-        public string FetchUserName(string userid)
-        {
-            var fetchedDetail = _v1RemDb.UserDetails.FirstOrDefault(record => record.UserId == userid);
-
-            if (fetchedDetail != null)
-            {
-                return fetchedDetail.UserName;
-            }
-
-            return "";
-        }
-
 
         public bool UpdateUserProfile(string userId, string userPhone, DateTime userBirthDate)
         {
@@ -131,8 +115,54 @@ namespace v1Remastered.Services
             return false; // Return false if no values are updated
         }
 
+        public Dictionary<string, string> FetchAdditionalUserDetails(UserDetailsDto_UserProfile userProfileDetails)
+        {
+            Dictionary<string, string> additionalUserDetails = new Dictionary<string, string>();
+
+            if(userProfileDetails.UserId != null)
+            {
+                string hospital1Name = _hospitalService.FetchHospitalNameById(userProfileDetails.UserBookingDetails.D1HospitalId);
+                string hospital2Name = _hospitalService.FetchHospitalNameById(userProfileDetails.UserBookingDetails.D2HospitalId);
+                
 
 
+                additionalUserDetails.Add("D1HospitalName", hospital1Name);
+                additionalUserDetails.Add("D2HospitalName", hospital2Name);
+            }
+
+            return additionalUserDetails;
+        }
+
+
+        public string FetchUserRoleById(string userid)
+        {
+            var userRecord = _v1RemDb.UserDetails.FirstOrDefault(record => record.UserId == userid);
+
+            if (userRecord != null)
+            {
+                return userRecord.UserRole ? "admin" : "user";
+            }
+
+            return "user"; // Default role if userRecord is null
+        }
+
+
+        public string FetchUserName(string userid)
+        {
+            var fetchedDetail = _v1RemDb.UserDetails.FirstOrDefault(record => record.UserId == userid);
+
+            if (fetchedDetail != null)
+            {
+                return fetchedDetail.UserName;
+            }
+
+            return "";
+        }
+
+
+        
+
+        
     }
 
 }
