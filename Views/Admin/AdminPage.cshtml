@@ -132,9 +132,9 @@
                                     <td>@record.UserId</td>
                                     <td>@record.BookingId</td>
                                     <td>@record.Dose1Date (<b>@record.D1HospitalName</b>)</td>
-                                    <td>@record.Dose2Date (<b>@record.D1HospitalName</b>)</td>
+                                    <td>@record.Dose2Date (<b>@record.D2HospitalName</b>)</td>
                                     <td>
-                                        @if(record.UserVaccinationStatus == 0)
+                                        @if(record.UserVaccinationStatus == 0 || record.UserVaccinationStatus == 1)
                                         {
                                             <span>Pending</span>
                                         }
@@ -144,7 +144,7 @@
                                         }
                                     </td>
                                     <td>
-                                        @if(record.UserVaccinationStatus == 0)
+                                        @if(record.UserVaccinationStatus == 0 || record.UserVaccinationStatus == 1)
                                         {
                                             <button class="approveButton btn btn-sm btn-danger" data-userid="@record.UserId" data-bookingid="@record.BookingId">Approve</button>
                                         }

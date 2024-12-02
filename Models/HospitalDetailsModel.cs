@@ -15,5 +15,8 @@ namespace v1Remastered.Models
 
         [Required(ErrorMessage = "hospital available slot count is required")]
         public int HospitalAvailableSlots {get; set;} = 0;
+
+        [Required(ErrorMessage = "hospital location is required")]
+        public string HospitalLocation {get; set;} = "";
     }
 }

@@ -70,7 +70,9 @@ namespace v1Remastered.Controllers
         [HttpPost("BookUserSlot")]
         public IActionResult ApproveSlotBook(string userId, string bookingId)
         {
-            bool approvalStatus = _adminService.ApproveSlotBook(userId, bookingId);
+            // bool approvalStatus = _adminService.ApproveSlotBook(userId, bookingId);
+
+            bool approvalStatus = _adminService.ApproveSlotBookV2(userId, bookingId);
 
             if(approvalStatus)
             {

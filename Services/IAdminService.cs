@@ -8,6 +8,8 @@ namespace v1Remastered.Services
     public interface IAdminService
     {
         public List<AdminDetailsDto_UserWithPendingApproval> FetchUsersWithPendingApproval();
+
+        public bool ApproveSlotBookV2(string userId, string bookingId);
         public bool ApproveSlotBook(string userId, string bookingId);
         public List<AdminDetailsDto_HospitalsList> FetchHospitalsList();
         public void UpdateAvailableSlotsById(string hospitalId, int increaseBy);
@@ -53,7 +55,8 @@ namespace v1Remastered.Services
                             on userDetails.UserId equals userVaccinationDetails.UserId
                             join bookingDetails in _v1RemDb.BookingDetails
                             on userVaccinationDetails.UserVaccinationId equals bookingDetails.UserVaccinationId
-                            where !string.IsNullOrEmpty(bookingDetails.BookingId) && userVaccinationDetails.UserVaccinationStatus == 0
+                            where (bookingDetails.Dose1BookDate != DateTime.MinValue && bookingDetails.Dose1ApproveDate == DateTime.MinValue) ||
+                            (bookingDetails.Dose2BookDate != DateTime.MinValue && bookingDetails.Dose2ApproveDate == DateTime.MinValue)
                             select new
                             {
                                 userVaccinationDetails.UserId,
@@ -81,6 +84,81 @@ namespace v1Remastered.Services
             return usersList.Count > 0 ? usersList : new List<AdminDetailsDto_UserWithPendingApproval>();
         }
 
+        // approve booked slot v2
+        public bool ApproveSlotBookV2(string userId, string bookingId)
+        {
+            // fetch booking details
+            var bookingDetails = _v1RemDb.BookingDetails.FirstOrDefault(record=>record.BookingId == bookingId);
+
+            if(bookingDetails != null)
+            {
+                // record approval date and time
+                DateTime approvalDateTime = DateTime.UtcNow;
+
+                string hospitalId = "";
+
+
+                if(bookingDetails.Dose1BookDate != DateTime.MinValue && bookingDetails.Dose1ApproveDate == DateTime.MinValue)
+                {
+                    bookingDetails.Dose1ApproveDate = approvalDateTime;
+                    hospitalId = bookingDetails.D1HospitalId;
+                }
+
+                if(bookingDetails.Dose2BookDate != DateTime.MinValue && bookingDetails.Dose2ApproveDate == DateTime.MinValue)
+                {
+                    bookingDetails.Dose2ApproveDate = approvalDateTime;
+                    hospitalId = bookingDetails.D2HospitalId;
+                }
+
+                _v1RemDb.BookingDetails.Update(bookingDetails);
+                int bookingDetailsUpdateStatus = _v1RemDb.SaveChanges();
+
+                if(bookingDetailsUpdateStatus > 0)
+                {
+                    // fetch user vaccination details
+                    var userVaccineDetails = _v1RemDb.UserVaccineDetails.FirstOrDefault(record=>record.UserId == userId);
+
+                    if(userVaccineDetails != null)
+                    {
+                        // update user vaccination status
+                        userVaccineDetails.UserVaccinationStatus = userVaccineDetails.UserVaccinationStatus+1;
+
+                        // save to DB
+                        _v1RemDb.UserVaccineDetails.Update(userVaccineDetails);
+                        int userVaccinationDetailsUpdateStatus = _v1RemDb.SaveChanges();
+
+                        if(userVaccinationDetailsUpdateStatus > 0)
+                        {
+                            // fetch hospital details
+                            var hospitalDetails = _v1RemDb.HospitalDetails.FirstOrDefault(record=>record.HospitalId == hospitalId);
+
+                            if(hospitalDetails != null)
+                            {
+                                hospitalDetails.HospitalAvailableSlots = hospitalDetails.HospitalAvailableSlots+1;
+
+                                _v1RemDb.HospitalDetails.Update(hospitalDetails);
+                                _v1RemDb.SaveChanges();
+
+                                return true;
+
+                            }
+
+                            else  {return false;} // no hospital details found
+                        }
+
+                        else {return false;} // user vaccination details not update
+
+                    }
+
+                    else {return false;} // no user vaccination details found
+                }
+
+                else {return false;} // booking details update failed
+
+            }
+            else{return false;} // no booking details found
+        }
+        
         // approve booked slot
         public bool ApproveSlotBook(string userId, string bookingId)
         {
@@ -108,7 +186,7 @@ namespace v1Remastered.Services
                     if(userVaccineDetails != null)
                     {
                         // update user vaccination status
-                        userVaccineDetails.UserVaccinationStatus = 1;
+                        userVaccineDetails.UserVaccinationStatus = userVaccineDetails.UserVaccinationStatus+1;
 
                         // save to DB
                         _v1RemDb.UserVaccineDetails.Update(userVaccineDetails);

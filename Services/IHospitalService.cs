@@ -14,7 +14,11 @@ namespace v1Remastered.Services
         public List<HospitalDetailsModel> FetchCentersWith1Slots();
         public string FetchHospitalNameById(string hospitalId);
         public List<HospitalDetailsModel> FetchHospitalsList();
+
+        // v2 booking
+        public List<HospitalDetailsDto_HospitalDetails> FetchAvailableHospitalsList();
         public HospitalDetailsModel FetchHospitalDeailsById(string hospitalId);
+        public string FetchHospitalIdyName(string hospitalName);
         public bool FetchSlotAvailableStatus();
     }
 
@@ -62,27 +66,14 @@ namespace v1Remastered.Services
             return "NA";
         }
 
-        // fetch hospital details by id
-        public HospitalDetailsModel FetchHospitalDeailsById(string hospitalId)
-        {
-            var hospitalDetails = _v1RemDb.HospitalDetails.FirstOrDefault(record=>record.HospitalId == hospitalId);
-            if(hospitalDetails != null)
-            {
-                return hospitalDetails;
-            }
-            return new HospitalDetailsModel();
-        }
         
-        // fetch all hospital details
-        public List<HospitalDetailsModel> FetchHospitalsList()
-        {
-            var hospitalList = _v1RemDb.HospitalDetails.ToList();
-            if(hospitalList != null)
-            {
-                return hospitalList;
-            }
-            return new List<HospitalDetailsModel>();
-        }
+
+
+
+
+
+
+
 
         // fetch slot available status
         public bool FetchSlotAvailableStatus()
@@ -99,6 +90,60 @@ namespace v1Remastered.Services
             return true;
         }
     
+        // fetch all hospital details
+        public List<HospitalDetailsModel> FetchHospitalsList()
+        {
+            var hospitalList = _v1RemDb.HospitalDetails.ToList();
+            if(hospitalList != null)
+            {
+                return hospitalList;
+            }
+            return new List<HospitalDetailsModel>();
+        }
+
+        // fetch all available hospitals details
+        public List<HospitalDetailsDto_HospitalDetails> FetchAvailableHospitalsList()
+        {
+            var hospitalList = _v1RemDb.HospitalDetails
+                                .Where(record=>record.HospitalAvailableSlots >= 1)
+                                .Select(record => new HospitalDetailsDto_HospitalDetails 
+                                    {
+                                        HospitalName = record.HospitalName,
+                                        HospitalAvailableSlots = record.HospitalAvailableSlots,
+                                        HospitalLocation = record.HospitalLocation
+                                    }
+                                )
+                                .ToList();
+            if(hospitalList != null)
+            {
+                return hospitalList;
+            }
+            return new List<HospitalDetailsDto_HospitalDetails>();
+        }
+
+        // fetch hospital id by name
+        public string FetchHospitalIdyName(string hospitalName)
+        {
+            var hospitalDetails = _v1RemDb.HospitalDetails.FirstOrDefault(record=>record.HospitalName == hospitalName);
+            if(hospitalDetails != null)
+            {
+                return hospitalDetails.HospitalId;
+            }
+
+            return "";
+        }
+
+        // fetch hospital details by id
+        public HospitalDetailsModel FetchHospitalDeailsById(string hospitalId)
+        {
+            var hospitalDetails = _v1RemDb.HospitalDetails.FirstOrDefault(record=>record.HospitalId == hospitalId);
+            if(hospitalDetails != null)
+            {
+                return hospitalDetails;
+            }
+            return new HospitalDetailsModel();
+        }
+        
     }
 
 }

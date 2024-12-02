@@ -62,7 +62,8 @@ namespace v1Remastered.Services
                 {
                     UserId = userVaccineDetails.UserId,
                     UserVaccinationId = userVaccineDetails.UserVaccinationId,
-                    UserVaccinationStatus = userVaccineDetails.UserVaccinationStatus == 0 ? "Not Vaccinated" : "Vaccinated"
+                    UserVaccinationStatus = userVaccineDetails.UserVaccinationStatus == 0 ? "Not Vaccinated" : 
+                                            userVaccineDetails.UserVaccinationStatus == 1 ? "Partially Vaccinated" : "Vaccinated"
                 };
             }
 

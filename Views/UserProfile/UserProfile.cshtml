@@ -147,13 +147,17 @@
                     @* user vaccination status *@
                     <div style="text-align: right;">
                         <span style="font-weight: 600; ">
-                            @if (Model.UserVaccineDetails.UserVaccinationStatus.ToLower() != "vaccinated")
+                            @if (Model.UserVaccineDetails.UserVaccinationStatus.ToLower() == "vaccinated")
                             {
-                                <i style="color:red; text-shadow: 0px 1px 20px red;" class="fas fa-wifi"></i>
+                                <i style="color:lime; text-shadow: 0px 1px 10px lime;" class="fas fa-wifi"></i>
+                            }
+                            else if (Model.UserVaccineDetails.UserVaccinationStatus.ToLower() == "partially vaccinated")
+                            {
+                                <i style="color:yellow; text-shadow: 0px 1px 20px yellow;" class="fas fa-wifi"></i>
                             }
                             else
                             {
-                                <i style="color:lime; text-shadow: 0px 1px 10px lime;" class="fas fa-wifi"></i>
+                                <i style="color:red; text-shadow: 0px 1px 20px red;" class="fas fa-wifi"></i>
                             }
                             Vaccination Status <br>
                         </span>
@@ -325,10 +329,42 @@
         
         <a class="user-edit-profile-link" href="@Url.Action("UserProfileEdit", "UserProfile", new {userid = Model.UserId})">Edit Profile</a>
 
-        @if(string.IsNullOrEmpty(Model.UserBookingDetails.BookingId))
+
+        @* slot book : if no booking id is present *@
+        @if(string.IsNullOrEmpty(Model.UserBookingDetails.BookingId) && Model.UserBookingDetails.Dose1BookDate == DateTime.MinValue)
         {
-            <a class="slot-book-submit" href="@Url.Action("Booking", "Booking", new {userid = Model.UserId})">Book Slots</a>
+            // enable slot booking button: dose 1
+            <a class="slot-book-submit" href="@Url.Action("V2Booking", "Booking", new {userid = Model.UserId})">Book Slot 1</a>
         }
+
+        @* edit slot book: if booking id is present *@
+        @if(Model.UserBookingDetails.Dose1BookDate != DateTime.MinValue & Model.UserBookingDetails.Dose1ApproveDate == DateTime.MinValue)
+        {
+            // enable edit slot book button
+            <a class="slot-book-submit" href="@Url.Action("V2BookingEdit", "Booking", new {userid = Model.UserId})">Edit Booked Slot 1</a>
+        }
+
+
+
+        @if(Model.UserBookingDetails.Dose1BookDate != DateTime.MinValue && Model.UserBookingDetails.Dose1ApproveDate != DateTime.MinValue)
+        {
+            // enable slot booking button: dose 2
+            <a class="slot-book-submit" href="@Url.Action("V2Booking", "Booking", new {userid = Model.UserId})">Book Slot 2</a>
+        }
+
+        @if(Model.UserBookingDetails.Dose2BookDate != DateTime.MinValue & Model.UserBookingDetails.Dose2ApproveDate == DateTime.MinValue)
+        {
+            // enable edit slot book button
+            <a class="slot-book-submit" href="@Url.Action("V2BookingEdit", "Booking", new {userid = Model.UserId})">Edit Booked Slot 2</a>
+        }
+
+
+        @* @if(string.IsNullOrEmpty(Model.UserBookingDetails.BookingId))
+        {
+            <a class="slot-book-submit" href="@Url.Action("V2Booking", "Booking", new {userid = Model.UserId})">Book Slots</a>
+        } *@
+
+
     </div>
 
 </div>

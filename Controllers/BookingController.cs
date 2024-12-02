@@ -17,6 +17,54 @@ namespace v1Remastered.Controllers
             _hospitalService = hospitalService;
         }
 
+
+        [HttpGet("v2/{userid}")]
+        public IActionResult V2Booking([FromRoute] string userid)
+        {
+            ViewBag.IsD1Approved = _bookingService.CheckD1ApprovalStatus(userid);
+            ViewBag.AvailableHospitalsLit = _bookingService.FetchAvailableHospitalsListForBooking();
+
+            return View();
+        }
+
+
+        [HttpPost("v2/{userid}")]
+        public IActionResult V2Booking(BookingDetailsDto_V2SlotBook submittedDetails, [FromRoute] string userid)
+        {
+            bool case1 = (!string.IsNullOrEmpty(submittedDetails.Dose1BookDate.ToString()) && submittedDetails.Dose1BookDate != DateTime.MinValue);
+            bool case2 = (!string.IsNullOrEmpty(submittedDetails.Dose2BookDate.ToString()) && submittedDetails.Dose2BookDate != DateTime.MinValue);
+
+            if((case1 || case2) && !string.IsNullOrEmpty(submittedDetails.HospitalName))
+            {
+                bool isSlotBooked = _bookingService.V2BookSlot(submittedDetails, userid);
+            
+                if(isSlotBooked)
+                {
+                    TempData["BookingStatusMsg"] = $"Booking successfull, see you soon at the vaccination center";
+                    return RedirectToAction("UserProfile", "UserProfile", new { userid = userid });
+                }
+            }
+
+            return RedirectToAction("V2Booking", "Booking", new {userid = userid});
+
+        }
+
+        
+        
+        [HttpGet("v2/{userid}/edit")]
+        public IActionResult V2BookingEdit([FromRoute] string userid)
+        {
+            return View();
+        }
+
+        // [HttpPost("v2/{userid}/edit")]
+        // public IActionResult V2BookingEdit([FormRoute] userid)
+        // {
+        //     return View();
+        // }
+
+
+
         [Authorize]
         [HttpGet("{userid}")]
         public IActionResult Booking(string userid)
@@ -73,5 +121,9 @@ namespace v1Remastered.Controllers
 
             return RedirectToAction("UserProfile", "UserProfile", new { userid = userid });
         }
+
+
+        
+
     }
 }

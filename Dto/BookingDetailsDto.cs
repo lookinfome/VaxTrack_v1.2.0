@@ -9,6 +9,16 @@ namespace v1Remastered.Dto
         public DateTime Dose2BookDate {get; set;} = DateTime.MinValue;
     }
 
+    public class BookingDetailsDto_V2SlotBook
+    {
+        public DateTime Dose1BookDate {get; set;} = DateTime.MinValue;
+        public DateTime Dose2BookDate {get; set;} = DateTime.MinValue;
+        public string HospitalName {get; set;} = "";
+        public int HospitalAvailableSlots {get; set;} = 0;
+        public string HospitalLocation {get; set;} = "";
+
+    }
+
     public class BookingDetailsDto_UserBookingDetails
     {
         public string BookingId {get; set;} = "";
