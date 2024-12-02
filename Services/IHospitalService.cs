@@ -10,16 +10,20 @@ namespace v1Remastered.Services
 {
     public interface IHospitalService
     {
-        public HospitalDetailsModel FetchCentersWith2Slots();
-        public List<HospitalDetailsModel> FetchCentersWith1Slots();
+        // exposed to: admin service, user profile service
         public string FetchHospitalNameById(string hospitalId);
+
+        // exposed to: admin service, admin controller
         public List<HospitalDetailsModel> FetchHospitalsList();
 
-        // v2 booking
+        // exposed to: booking service, booking controller
         public List<HospitalDetailsDto_HospitalDetails> FetchAvailableHospitalsList();
-        public HospitalDetailsModel FetchHospitalDeailsById(string hospitalId);
+
+        // exposed to: booking service, admin service
+        public HospitalDetailsModel FetchHospitalDetailsById(string hospitalId);
+
+        // exposed to: booking service
         public string FetchHospitalIdyName(string hospitalName);
-        public bool FetchSlotAvailableStatus();
     }
 
     public class HospitalService : IHospitalService
@@ -29,28 +33,6 @@ namespace v1Remastered.Services
         public HospitalService(AppDbContext v1RemDb)
         {
             _v1RemDb = v1RemDb;
-        }
-
-        // fetch hospital details with 2 available slots
-        public HospitalDetailsModel FetchCentersWith2Slots()
-        {
-            var availableCenters = _v1RemDb.HospitalDetails.FirstOrDefault(record => record.HospitalAvailableSlots >= 2);
-
-            if (availableCenters != null && !string.IsNullOrEmpty(availableCenters.HospitalId))
-            {
-                return availableCenters;
-            }
-
-            return new HospitalDetailsModel();
-        }
-
-        // fetch 2 hospital details with 1 slots
-        public List<HospitalDetailsModel> FetchCentersWith1Slots()
-        {
-            List<HospitalDetailsModel> availableCenters = _v1RemDb.HospitalDetails.Where(record=>record.HospitalAvailableSlots == 1).Take(2).ToList();
-
-            return availableCenters.Count<=0 ? new List<HospitalDetailsModel>() : availableCenters;
-
         }
 
         // fetch hospital name by id
@@ -66,30 +48,6 @@ namespace v1Remastered.Services
             return "NA";
         }
 
-        
-
-
-
-
-
-
-
-
-        // fetch slot available status
-        public bool FetchSlotAvailableStatus()
-        {
-            // extract available slot details
-            HospitalDetailsModel availableCenters = FetchCentersWith2Slots();
-            List<HospitalDetailsModel> availableCentersList = FetchCentersWith1Slots();
-
-            if(string.IsNullOrEmpty(availableCenters.HospitalId) && availableCentersList.Count < 1)
-            {
-                return false;
-            }
-
-            return true;
-        }
-    
         // fetch all hospital details
         public List<HospitalDetailsModel> FetchHospitalsList()
         {
@@ -134,7 +92,7 @@ namespace v1Remastered.Services
         }
 
         // fetch hospital details by id
-        public HospitalDetailsModel FetchHospitalDeailsById(string hospitalId)
+        public HospitalDetailsModel FetchHospitalDetailsById(string hospitalId)
         {
             var hospitalDetails = _v1RemDb.HospitalDetails.FirstOrDefault(record=>record.HospitalId == hospitalId);
             if(hospitalDetails != null)

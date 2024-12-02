@@ -7,8 +7,8 @@ namespace v1Remastered.Services
 {
     public interface IAdminService
     {
+        // action
         public List<AdminDetailsDto_UserWithPendingApproval> FetchUsersWithPendingApproval();
-
         public bool ApproveSlotBookV2(string userId, string bookingId);
         public bool ApproveSlotBook(string userId, string bookingId);
         public List<AdminDetailsDto_HospitalsList> FetchHospitalsList();
@@ -296,7 +296,7 @@ namespace v1Remastered.Services
         // update hospital avialable slots
         public void UpdateAvailableSlotsById(string hospitalId, int increaseBy)
         {
-            HospitalDetailsModel _hospitalDetails = _hospitalService.FetchHospitalDeailsById(hospitalId);
+            HospitalDetailsModel _hospitalDetails = _hospitalService.FetchHospitalDetailsById(hospitalId);
             if(_hospitalDetails.HospitalId != null)
             {
                 int updatedSlots = _hospitalDetails.HospitalAvailableSlots + increaseBy;

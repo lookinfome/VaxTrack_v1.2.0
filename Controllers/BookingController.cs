@@ -17,7 +17,7 @@ namespace v1Remastered.Controllers
             _hospitalService = hospitalService;
         }
 
-
+        [Authorize]
         [HttpGet("v2/{userid}")]
         public IActionResult V2Booking([FromRoute] string userid)
         {
@@ -44,7 +44,7 @@ namespace v1Remastered.Controllers
 
         }
 
-
+        [Authorize]
         [HttpPost("v2/{userid}")]
         public IActionResult V2Booking(BookingDetailsDto_V2SlotBook submittedDetails, [FromRoute] string userid)
         {
@@ -66,81 +66,6 @@ namespace v1Remastered.Controllers
             return RedirectToAction("V2Booking", "Booking", new {userid = userid});
 
         }
-
-        
-        
-        [HttpGet("v2/{userid}/edit")]
-        public IActionResult V2BookingEdit([FromRoute] string userid)
-        {
-            return View();
-        }
-
-        // [HttpPost("v2/{userid}/edit")]
-        // public IActionResult V2BookingEdit([FormRoute] userid)
-        // {
-        //     return View();
-        // }
-
-
-
-        [Authorize]
-        [HttpGet("{userid}")]
-        public IActionResult Booking(string userid)
-        {
-
-            // fetch booking details for user
-            var _userBookingDetails = _bookingService.FetchBookingDetails(userid);
-
-            // fetch booking id for user
-            if(!string.IsNullOrEmpty(_userBookingDetails?.BookingId))
-            {
-
-                // return message page
-                ViewBag.BookingErrorMsg = $"{userid} - already booked both slots, booking Id: {_userBookingDetails.BookingId}";
-                return View("~/Views/Booking/BookingError.cshtml");
-            }
-
-            // if booking id not exists
-            else
-            {
-                // fetch username
-                @ViewBag.userid = userid;
-
-                if(!_hospitalService.FetchSlotAvailableStatus())
-                {
-                    ViewBag.BookingErrorMsg = "No vaccine center are available with open slots right now";
-                    return View("~/Views/Booking/BookingError.cshtml");
-                }
-                else
-                {
-                    // return new slot booking form
-                    return View();
-                }
-            }
-        }
-
-        [Authorize]
-        [HttpPost("{userid}")]
-        public IActionResult Booking(BookingDetailsDto_SlotBook submittedDetails, [FromRoute] string userid)
-        {
-
-            int result = _bookingService.BookSlot(submittedDetails, userid);
-
-            if(result > 0)
-            {
-                TempData["BookingStatusMsg"] = $"Booking successfull, see you soon at the vaccination center"; 
-            }
-            else
-            {
-                TempData["BookingStatusMsg"] = $"Booking unsuccessful, apologies and working on it or try again";
-                // ViewBag.BookingErrorMsg = "Unexpected error occurred";
-                // return View("~/Views/Booking/BookingError.cshtml");
-            }
-
-            return RedirectToAction("UserProfile", "UserProfile", new { userid = userid });
-        }
-
-
         
 
     }
