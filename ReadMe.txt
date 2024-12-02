@@ -1,8 +1,8 @@
 # Vax Track v1.2.0
 
 ## New Addition
-- User profile edit module: Completd
-- Booked slot edit module
+- User profile edit module: Completed
+- Booked slot edit module: Completed
 - User feedback module
 - User support module
 
