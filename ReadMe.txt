@@ -2,7 +2,8 @@
 
 ## New Addition
 - User profile edit module: Completed
-- Booked slot edit module: Completed
+- Slot Booking V2 module: Completed
+- Booked slot edit module
 - User feedback module
 - User support module
 
