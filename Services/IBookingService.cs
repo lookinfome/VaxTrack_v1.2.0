@@ -26,6 +26,12 @@ namespace v1Remastered.Services
         */
         public BookingDetailsDto_UserBookingDetails FetchBookingDetails(string userid);
 
+        // exposed to: booking controller [v2]
+        public DateTime FetchD1BookingDate(string userid);
+
+        // exposed to: booking controller [v2]
+        public bool CheckUserBookingStatus(string userid);
+
 
 
         // exposed to: booking controller
@@ -270,7 +276,33 @@ namespace v1Remastered.Services
 
             return new BookingDetailsDto_UserBookingDetails();
         }
-        
+
+        // service method: to fetch dose 1 booking date
+        public DateTime FetchD1BookingDate(string userid)
+        {
+            var fetchedDetails = _v1RemDb.BookingDetails.FirstOrDefault(record=>record.UserId == userid);
+            if(fetchedDetails != null)
+            {
+                return fetchedDetails.Dose1BookDate;
+            }
+            return new DateTime();
+        }
+
+        // service method: to check if user already booked both slots
+        public bool CheckUserBookingStatus(string userid)
+        {
+            var fetchedDetails = _v1RemDb.BookingDetails.FirstOrDefault(record=>record.UserId == userid);
+            if(fetchedDetails != null)
+            {
+                if(fetchedDetails.Dose1BookDate != DateTime.MinValue && fetchedDetails.Dose2BookDate != DateTime.MinValue)
+                {
+                    return false;
+                }
+                return true;
+            }
+            return true;
+        }
+
         // utility method: generate new booking id
         private string GenerateBookingId(string userid)
         {

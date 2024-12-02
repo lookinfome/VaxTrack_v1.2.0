@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace v1Remastered.Migrations
 {
     /// <inheritdoc />
-    public partial class AppUserIdenityModel : Migration
+    public partial class FreshModels : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -48,6 +48,71 @@ namespace v1Remastered.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BookingDetails",
+                columns: table => new
+                {
+                    BookingId = table.Column<string>(type: "TEXT", nullable: false),
+                    Dose1BookDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Dose2BookDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    D1HospitalId = table.Column<string>(type: "TEXT", nullable: false),
+                    D2HospitalId = table.Column<string>(type: "TEXT", nullable: false),
+                    D1SlotNumber = table.Column<int>(type: "INTEGER", nullable: false),
+                    D2SlotNumber = table.Column<int>(type: "INTEGER", nullable: false),
+                    Dose1ApproveDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Dose2ApproveDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UserId = table.Column<string>(type: "TEXT", nullable: false),
+                    UserVaccinationId = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BookingDetails", x => x.BookingId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "HospitalDetails",
+                columns: table => new
+                {
+                    HospitalId = table.Column<string>(type: "TEXT", nullable: false),
+                    HospitalName = table.Column<string>(type: "TEXT", nullable: false),
+                    HospitalAvailableSlots = table.Column<int>(type: "INTEGER", nullable: false),
+                    HospitalLocation = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HospitalDetails", x => x.HospitalId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserDetails",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "TEXT", nullable: false),
+                    UserName = table.Column<string>(type: "TEXT", nullable: false),
+                    UserBirthdate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UserUid = table.Column<string>(type: "TEXT", maxLength: 12, nullable: false),
+                    UserGender = table.Column<string>(type: "TEXT", nullable: false),
+                    UserPhone = table.Column<string>(type: "TEXT", maxLength: 10, nullable: false),
+                    UserRole = table.Column<bool>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserDetails", x => x.UserId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserVaccineDetails",
+                columns: table => new
+                {
+                    UserVaccinationId = table.Column<string>(type: "TEXT", nullable: false),
+                    UserVaccinationStatus = table.Column<int>(type: "INTEGER", nullable: false),
+                    UserId = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserVaccineDetails", x => x.UserVaccinationId);
                 });
 
             migrationBuilder.CreateTable(
@@ -211,6 +276,18 @@ namespace v1Remastered.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "BookingDetails");
+
+            migrationBuilder.DropTable(
+                name: "HospitalDetails");
+
+            migrationBuilder.DropTable(
+                name: "UserDetails");
+
+            migrationBuilder.DropTable(
+                name: "UserVaccineDetails");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

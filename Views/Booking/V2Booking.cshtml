@@ -7,6 +7,8 @@
     ViewBag.pageTitle2 = "available hospital list".ToUpper();
     ViewBag.pageDesc2 = "select as per your convenience ";
     var lowerLimitd1 = DateTime.Now.ToString("yyyy-MM-dd");
+
+    var dose1BookingDate = ((DateTime)ViewBag.Dose1BookingDate).ToString("yyyy-MM-dd");
 }
 
 <style>
@@ -19,6 +21,16 @@
 
 
 <div class="container">
+
+    @if(!string.IsNullOrEmpty(ViewBag.BookingStatusMsg))
+    {
+        <div>
+            <div style="padding: none; box-shadow: 0px 1px 10px yellow;" id="bookingmsg" class="alert alert-warning text-center" role="alert">
+                @ViewBag.BookingStatusMsg
+                <i class="fas fa-exclamation"></i>
+            </div>
+        </div>
+    }
 
     <div class="row justify-content-center">
 
@@ -82,7 +94,7 @@
                 }
             </div>
 
-             @* action buttons *@
+            @* action buttons *@
             <div class="mt-1 mb-4 d-flex justify-content-end">
                 <a style="color:aqua" href="javascript:void(0);" onclick="window.history.back();" class="">Go Back</a>
             </div>
@@ -144,6 +156,35 @@
 </div>
 
 @section Scripts{
+
+    <script>
+        window.onload = function() {
+            setTimeout(function() {
+                var welcomeMessage = document.getElementById('bookingmsg');
+                if (welcomeMessage) {
+                    welcomeMessage.style.display = 'none';
+                }
+            }, 5000); // 5000 milliseconds = 5 seconds
+        };
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            setDose2MinDate();
+        });
+
+        function setDose2MinDate() {
+            var d1bookdate = '@dose1BookingDate'; // Ensure this is treated as a string
+            var dose2DateInput = document.getElementById('Dose2BookDate');
+            if (dose2DateInput) {
+                dose2DateInput.min = d1bookdate;
+                dose2DateInput.value = ""; // Reset the second dose date input
+            }
+        }
+    </script>
+
+
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
         const tableBody = document.getElementById('hospitalTableBody');

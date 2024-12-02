@@ -330,39 +330,30 @@
         <a class="user-edit-profile-link" href="@Url.Action("UserProfileEdit", "UserProfile", new {userid = Model.UserId})">Edit Profile</a>
 
 
-        @* slot book : if no booking id is present *@
-        @if(string.IsNullOrEmpty(Model.UserBookingDetails.BookingId) && Model.UserBookingDetails.Dose1BookDate == DateTime.MinValue)
+        @* slot book *@
+        @if (string.IsNullOrEmpty(Model.UserBookingDetails.BookingId) && Model.UserBookingDetails.Dose1BookDate == DateTime.MinValue)
         {
             // enable slot booking button: dose 1
-            <a class="slot-book-submit" href="@Url.Action("V2Booking", "Booking", new {userid = Model.UserId})">Book Slot 1</a>
+            <a class="slot-book-submit" href="@Url.Action("V2Booking", "Booking", new { userid = Model.UserId })">Book Slot 1</a>
         }
-
-        @* edit slot book: if booking id is present *@
-        @if(Model.UserBookingDetails.Dose1BookDate != DateTime.MinValue & Model.UserBookingDetails.Dose1ApproveDate == DateTime.MinValue)
-        {
-            // enable edit slot book button
-            <a class="slot-book-submit" href="@Url.Action("V2BookingEdit", "Booking", new {userid = Model.UserId})">Edit Booked Slot 1</a>
-        }
-
-
-
-        @if(Model.UserBookingDetails.Dose1BookDate != DateTime.MinValue && Model.UserBookingDetails.Dose1ApproveDate != DateTime.MinValue)
+        else if (Model.UserBookingDetails.Dose1BookDate != DateTime.MinValue && Model.UserBookingDetails.Dose1ApproveDate != DateTime.MinValue && Model.UserBookingDetails.Dose2BookDate == DateTime.MinValue)
         {
             // enable slot booking button: dose 2
-            <a class="slot-book-submit" href="@Url.Action("V2Booking", "Booking", new {userid = Model.UserId})">Book Slot 2</a>
+            <a class="slot-book-submit" href="@Url.Action("V2Booking", "Booking", new { userid = Model.UserId })">Book Slot 2</a>
         }
 
-        @if(Model.UserBookingDetails.Dose2BookDate != DateTime.MinValue & Model.UserBookingDetails.Dose2ApproveDate == DateTime.MinValue)
+        @* @if(Model.UserBookingDetails.Dose2BookDate != DateTime.MinValue & Model.UserBookingDetails.Dose2ApproveDate == DateTime.MinValue)
         {
             // enable edit slot book button
             <a class="slot-book-submit" href="@Url.Action("V2BookingEdit", "Booking", new {userid = Model.UserId})">Edit Booked Slot 2</a>
         }
 
-
-        @* @if(string.IsNullOrEmpty(Model.UserBookingDetails.BookingId))
+        @if(Model.UserBookingDetails.Dose1BookDate != DateTime.MinValue & Model.UserBookingDetails.Dose1ApproveDate == DateTime.MinValue)
         {
-            <a class="slot-book-submit" href="@Url.Action("V2Booking", "Booking", new {userid = Model.UserId})">Book Slots</a>
+            // enable edit slot book button
+            <a class="slot-book-submit" href="@Url.Action("V2BookingEdit", "Booking", new {userid = Model.UserId})">Edit Booked Slot 1</a>
         } *@
+
 
 
     </div>
