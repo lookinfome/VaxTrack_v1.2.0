@@ -3,9 +3,6 @@
 ## New Addition
 - User profile edit module: Completed
 - Slot Booking V2 module: Completed
-- Booked slot edit module
-- User feedback module
-- User support module
 
 ## Updates
 - user/admin: welcome/update/alert messages based on conditions, added for login, registeration, user profile edit, and slot booking: Completed
