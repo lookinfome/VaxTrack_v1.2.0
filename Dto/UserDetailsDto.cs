@@ -49,6 +49,8 @@ namespace v1Remastered.Dto
 
         public bool UserRole {get; set;} = false;
 
+        public IFormFile? ProfilePicture { get; set; }
+
     }
 
     public class UserDetailsDto_UserProfileEdit
@@ -61,6 +63,8 @@ namespace v1Remastered.Dto
         [StringLength(10, ErrorMessage = "Phone number cannot be longer than 10 digits")]
         [RegularExpression(@"^\d{10}$", ErrorMessage = "Phone number must be 10 digits")]
         public string UserPhone { get; set; } = "";
+
+        public IFormFile? ProfilePicture { get; set; }
 
         public string UserPassword {get; set;}="";
     }
@@ -98,6 +102,8 @@ namespace v1Remastered.Dto
         public UserVaccineDetailsDto_VaccineDetails UserVaccineDetails {get; set; } = new UserVaccineDetailsDto_VaccineDetails();
 
         public BookingDetailsDto_UserBookingDetails UserBookingDetails { get; set; } = new BookingDetailsDto_UserBookingDetails();
+
+        public string ProfilePicturePath { get; set; } = "";
     }
 
 

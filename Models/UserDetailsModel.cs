@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using v1Remastered.Dto;
@@ -33,6 +34,8 @@ namespace v1Remastered.Models
 
         [Required(ErrorMessage = "Role is required")]
         public bool UserRole {get; set;} = true;
+
+        public string ProfilePicturePath { get; set; } = "";
 
         public static implicit operator UserDetailsModel(UserDetailsDto_Register v)
         {

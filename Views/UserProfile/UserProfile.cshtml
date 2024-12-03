@@ -74,6 +74,8 @@
     <div class="row justify-content-center mt-5">
 
         @* 1st row, 1st col *@
+        @* personal details and vaccination details *@
+
         <div class="col col-lg-4 col-md-6 col-sm-6">
 
             @* 1st row, 1st col, 1st row *@
@@ -222,7 +224,33 @@
 
 
         @* 1st row, 2nd col *@
+        @* booking details *@
+
+
         <div class="col col-lg-4 col-md-6 col-sm-6">
+
+            <div>
+                @if (!string.IsNullOrEmpty(Model.ProfilePicturePath))
+                {
+                    <div class="mb-4"
+                        style="
+                            border: 2px solid gainsboro;
+                            width: max-content;
+                            border-radius: 10px;
+                            box-shadow: 0px 1px 10px gainsboro; 
+                        "   
+                    >
+                        <img style="border-radius: 10px; width: 200px; height: 200px;" src="../@Model.ProfilePicturePath" alt="Profile Picture"/>
+                    </div>
+                }
+                else
+                {
+                    <div>
+                        <span style="color: white;">No profile picture uploaded</span>
+                    </div>
+                }
+            </div>
+
             
             <div class="user-booking-details">
                 
@@ -325,6 +353,7 @@
 
     @* 2nd row *@
     @* user profile edit and slot booking link *@
+    
     <div class="mt-5 text-center">
         
         <a class="user-edit-profile-link" href="@Url.Action("UserProfileEdit", "UserProfile", new {userid = Model.UserId})">Edit Profile</a>

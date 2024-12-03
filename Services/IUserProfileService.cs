@@ -5,13 +5,19 @@ using v1Remastered.Models;
 using v1Remastered.Dto;
 using System.Linq;
 
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using System;
+using System.IO;
+using System.Threading.Tasks;
+
 
 namespace v1Remastered.Services
 {
     public interface IUserProfileService
     {
         // exposed to: user profile controller
-        public bool UpdateUserProfile(string userId, string userPhone, DateTime userBirthDate);
+        public bool UpdateUserProfile(string userId, string userPhone, DateTime userBirthDate, IFormFile profilePicture);
 
         // exposed to: user profile controller
         public UserDetailsDto_UserProfile FetchUserProfileDetails(string userid);
@@ -31,15 +37,16 @@ namespace v1Remastered.Services
         private readonly AppDbContext _v1RemDb;
         private readonly IUserVaccineDetailsService _userVaccineDetailsService;
         private readonly IBookingService _bookingService;
-
         private readonly IHospitalService _hospitalService;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public UserProfileService(AppDbContext v1RemDb, IUserVaccineDetailsService userVaccineDetailsService, IBookingService bookingService, IHospitalService hospitalService)
+        public UserProfileService(AppDbContext v1RemDb, IUserVaccineDetailsService userVaccineDetailsService, IBookingService bookingService, IHospitalService hospitalService, IWebHostEnvironment webHostEnvironment)
         {
             _v1RemDb = v1RemDb;
             _userVaccineDetailsService = userVaccineDetailsService;
             _bookingService = bookingService;
             _hospitalService = hospitalService;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public UserDetailsDto_UserProfile FetchUserProfileDetails(string userid)
@@ -61,7 +68,8 @@ namespace v1Remastered.Services
                     UserRole = userDetails.UserRole,
                     UserUid = userDetails.UserUid,
                     UserVaccineDetails = userVaccineDetails,
-                    UserBookingDetails = userBookingDetails
+                    UserBookingDetails = userBookingDetails,
+                    ProfilePicturePath = userDetails.ProfilePicturePath
                 };
 
                 return userProfileDetails;
@@ -70,16 +78,16 @@ namespace v1Remastered.Services
             return new UserDetailsDto_UserProfile();
         }
 
-        public bool UpdateUserProfile(string userId, string userPhone, DateTime userBirthDate)
+        public bool UpdateUserProfile(string userId, string userPhone, DateTime userBirthDate, IFormFile profilePicture)
         {
             // Both values are empty
-            if (string.IsNullOrEmpty(userPhone) && userBirthDate == DateTime.MinValue)
+            if (string.IsNullOrEmpty(userPhone) && userBirthDate == DateTime.MinValue && profilePicture == null)
             {
                 return false; // No update needed
             }
 
             // Update logic for user phone and/or birth date
-            if (!string.IsNullOrEmpty(userPhone) || userBirthDate != DateTime.MinValue)
+            if (!string.IsNullOrEmpty(userPhone) || userBirthDate != DateTime.MinValue || profilePicture != null)
             {
                 // fetch user details
                 var fetchedDetails = _v1RemDb.UserDetails.FirstOrDefault(record => record.UserId == userId);
@@ -97,6 +105,19 @@ namespace v1Remastered.Services
                     {
                         // Update birth date logic
                         fetchedDetails.UserBirthdate = userBirthDate;
+                    }
+
+                    // update image
+                    if (profilePicture != null)
+                    {
+                        string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "assets");
+                        string uniqueFileName = Guid.NewGuid().ToString() + "_" + profilePicture.FileName;
+                        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            profilePicture.CopyTo(fileStream);
+                        }
+                        fetchedDetails.ProfilePicturePath = "/assets/" + uniqueFileName;
                     }
 
                     // save to DB

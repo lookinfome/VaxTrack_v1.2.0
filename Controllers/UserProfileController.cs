@@ -107,7 +107,7 @@ namespace v1Remastered.Controllers
 
             if(isUserAuthentic)
             {
-                bool result = _userProfileService.UpdateUserProfile(userid, submittedDetails.UserPhone, submittedDetails.UserBirthdate);
+                bool result = _userProfileService.UpdateUserProfile(userid, submittedDetails.UserPhone, submittedDetails.UserBirthdate, submittedDetails.ProfilePicture);
                 string userName = _userProfileService.FetchUserName(userid);
 
                 TempData["userProfileUpdateMsg"] = $"{userName}'s profile have been updated successfully";

@@ -92,7 +92,11 @@ namespace v1Remastered.Controllers
         
             if(ModelState.IsValid)
             {
-                string userId = _accountService.RegisterUser(submittedDetails);
+                // Task<string> userId1 = _accountService.RegisterUser(submittedDetails);
+
+
+
+                string userId= _accountService.RegisterUser(submittedDetails);
 
                 if(!string.IsNullOrEmpty(userId))
                 {

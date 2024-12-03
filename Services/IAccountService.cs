@@ -5,6 +5,13 @@ using v1Remastered.Models;
 using v1Remastered.Dto;
 using System.Linq;
 
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using System;
+using System.IO;
+using System.Threading.Tasks;
+
+
 
 namespace v1Remastered.Services
 {
@@ -23,11 +30,13 @@ namespace v1Remastered.Services
         private readonly AppDbContext _v1RemDb;
         private readonly IAuthService _authService;
         private readonly IUserVaccineDetailsService _userVaccineDetailsService;
+        private readonly IWebHostEnvironment _webHostEnvironment;
         
-        public AccountService(AppDbContext v1RemDb, IAuthService authService, IUserVaccineDetailsService userVaccineDetailsService)
+        public AccountService(AppDbContext v1RemDb, IAuthService authService, IUserVaccineDetailsService userVaccineDetailsService, IWebHostEnvironment webHostEnvironment)
         {
             _v1RemDb = v1RemDb;
             _authService = authService;
+            _webHostEnvironment = webHostEnvironment;
             _userVaccineDetailsService = userVaccineDetailsService;
         }
 
@@ -54,7 +63,11 @@ namespace v1Remastered.Services
             // save user details in DB
             if(!string.IsNullOrEmpty(result.Result.ToString()) && result.Result.ToString() == submittedDetails.UserId)
             {
+                Console.WriteLine($"-----------From Register User: {result.Result.ToString()}----------------");
+
                 bool isUserDetailsSaved = SaveNewUserDetails(submittedDetails);
+
+                Console.WriteLine($"-----------From Register User Post Save New User Details: {isUserDetailsSaved}----------------");
 
                 bool isUserVaccineDetailsSaved = isUserDetailsSaved ? _userVaccineDetailsService.SaveNewUserVaccinationDetails(submittedDetails.UserId) : false;
 
@@ -90,6 +103,20 @@ namespace v1Remastered.Services
                 UserBirthdate = submittedDetails.UserBirthdate,
                 UserRole = submittedDetails.UserRole
             };
+
+            // save image details
+            if (submittedDetails.ProfilePicture != null)
+            {
+                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "assets");
+                string uniqueFileName = Guid.NewGuid().ToString() + "_" + submittedDetails.ProfilePicture.FileName;
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    submittedDetails.ProfilePicture.CopyTo(fileStream);
+                }
+                userDetails.ProfilePicturePath = "/assets/" + uniqueFileName;
+            }
+
 
             // save record to DB and update DB
             _v1RemDb.UserDetails.Add(userDetails);
