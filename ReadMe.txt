@@ -9,9 +9,7 @@
 
 ## Updates
 - user/admin: welcome/update/alert messages based on conditions, added for login, registeration, user profile edit, and slot booking: Completed
-- user/admin: user prodifle pic upload
-- admin: additonal charts/graphs for insights on user's feedback on dashboard
-- admin: seperate tab for support related tickets to manage support related tickets
+- user/admin: user prodifle pic upload: Completed
 
 ## Fixes
 - NA
