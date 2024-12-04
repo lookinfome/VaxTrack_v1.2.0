@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\vivek.kumar162\\VaxTrack_v1.2.0\\VaxTrack_v1.2.0\\v1Remastered.csproj": {}
+    "C:\\Users\\vivek.kumar162\\VaxTrack_v1.3.0\\VaxTrack_v1.3.0\\v1Remastered.csproj": {}
   },
   "projects": {
-    "C:\\Users\\vivek.kumar162\\VaxTrack_v1.2.0\\VaxTrack_v1.2.0\\v1Remastered.csproj": {
+    "C:\\Users\\vivek.kumar162\\VaxTrack_v1.3.0\\VaxTrack_v1.3.0\\v1Remastered.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\vivek.kumar162\\VaxTrack_v1.2.0\\VaxTrack_v1.2.0\\v1Remastered.csproj",
+        "projectUniqueName": "C:\\Users\\vivek.kumar162\\VaxTrack_v1.3.0\\VaxTrack_v1.3.0\\v1Remastered.csproj",
         "projectName": "v1Remastered",
-        "projectPath": "C:\\Users\\vivek.kumar162\\VaxTrack_v1.2.0\\VaxTrack_v1.2.0\\v1Remastered.csproj",
+        "projectPath": "C:\\Users\\vivek.kumar162\\VaxTrack_v1.3.0\\VaxTrack_v1.3.0\\v1Remastered.csproj",
         "packagesPath": "C:\\Users\\vivek.kumar162\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\vivek.kumar162\\VaxTrack_v1.2.0\\VaxTrack_v1.2.0\\obj\\",
+        "outputPath": "C:\\Users\\vivek.kumar162\\VaxTrack_v1.3.0\\VaxTrack_v1.3.0\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\vivek.kumar162\\AppData\\Roaming\\NuGet\\NuGet.Config"

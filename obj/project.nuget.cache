@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "3qnSVgTdI1s=",
+  "dgSpecHash": "pD2VG3tfItc=",
   "success": true,
-  "projectFilePath": "C:\\Users\\vivek.kumar162\\VaxTrack_v1.2.0\\VaxTrack_v1.2.0\\v1Remastered.csproj",
+  "projectFilePath": "C:\\Users\\vivek.kumar162\\VaxTrack_v1.3.0\\VaxTrack_v1.3.0\\v1Remastered.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\vivek.kumar162\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\vivek.kumar162\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\8.0.10\\microsoft.aspnetcore.cryptography.internal.8.0.10.nupkg.sha512",
