@@ -1,15 +1,12 @@
 # Vax Track v1.2.0
 
 ## New Addition
-- NA
+- User profile edit module: Completed
+- Slot Booking V2 module: Completed
 
 ## Updates
-- UI Update: Home Page 
-- UI Update: SignIn Page
-- UI Update: SignUp Page
-- UI Update: User Profile Page
-- UI Update: Slot Book Page
-- UI Update: Admin Page
+- user/admin: welcome/update/alert messages based on conditions, added for login, registeration, user profile edit, and slot booking: Completed
+- user/admin: user prodifle pic upload: Completed
 
 ## Fixes
-- NA
+- NA   
